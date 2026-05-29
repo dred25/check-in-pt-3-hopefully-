@@ -1,0 +1,92 @@
+---
+title: "check in 3"
+author: "damian rojas"
+format: html
+---
+
+
+```{r}
+install.packages("ggplot2","dpylr","plotly","viridis","hrbrthemes")
+ylibrary(tidyverse)
+library(ggeffects)
+library(janitor)
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(viridis)
+library(hrbrthemes)
+
+
+```
+
+You can add options to executable code like this 
+
+```{r}
+walks <- read.csv("walks_data.csv") |> 
+#from HW 2
+mutate(work_due = as_factor(work_due))
+       #factor so data is listed in order of appearance, cleans up repeats
+#create graph, start with gg plot as base layer
+# x = categorical predictor
+ggplot(walks, aes(x = work_due, 
+# y = response variable (in seconds to avoid graph looking skewed)
+                  y = walk_time_s)) +
+# scatter plot to compare relationship between predictor and response variable
+geom_jitter(height = 0,
+            width = 0,
+            shape = 16,
+            size=5,
+            color="red3") +
+                        
+#label graph
+labs(title="Workload vs Walk time", 
+     x = "Assignments due",
+     y = "Length of walk (sec)") +
+#change theme
+theme_gray()
+
+```
+
+```{r}
+#from HW2 to show potential relationship between degrees and walk time
+#collect personal data
+walks |> 
+
+mutate(WEATHER_F = as_factor(WEATHER_F))
+
+#create graph, start with gg plot as base layer
+#x=continuous predictor, weather
+#y= length of walk
+#take degrees F ofdatqa sheet, abel in axis
+ggplot(walks, aes(x = WEATHER_F, 
+                  y = walk_time_s)) +
+#scatter plot to compare relationship between continuous predictor and response 
+geom_point(color="orange4", size = 5) +
+
+#label graph
+labs(title = "Weather vs Walk Time", 
+     x = "Weather(°F)", 
+     y = "Length of Walk (sec)") +
+
+#change theme
+theme_bw()
+```
+
+```{r}
+#hexbin plot
+
+ggplot(walks, aes(x =as.numeric(as.character (work_due)), y = walk_time_s)) +
+  geom_hex(bins = 16) +
+  scale_fill_gradient(low = "lightblue", high = "darkblue") +
+  theme_minimal() 
+
+```
+
+```{r}
+walks |> 
+  mutate(work_due=round)
+ggplot(walks, aes(x = as.numeric(as.character(work_due)), y = walk_time_s)) +
+  geom_count(aes(color = "purple", alpha = 0.8)) 
+  
+```
+
