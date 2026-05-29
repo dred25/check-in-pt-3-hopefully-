@@ -1,13 +1,13 @@
 ---
 title: "check in 3"
 author: "damian rojas"
-format: html
+format: pdf
+date: 2026-05-28
 ---
 
-
-```{r}
-install.packages("ggplot2","dpylr","plotly","viridis","hrbrthemes")
-ylibrary(tidyverse)
+## Set-up
+```{r,message=FALSE}
+library(tidyverse)
 library(ggeffects)
 library(janitor)
 library(ggplot2)
@@ -15,13 +15,15 @@ library(dplyr)
 library(plotly)
 library(viridis)
 library(hrbrthemes)
-
+library(ggbeeswarm)
+#beeswarm package from failed beeswarm plot
 
 ```
 
-You can add options to executable code like this 
+## Read in data from personal data project
 
-```{r}
+
+```{r, message=FALSE}
 walks <- read.csv("walks_data.csv") |> 
 #from HW 2
 mutate(work_due = as_factor(work_due))
@@ -47,7 +49,7 @@ theme_gray()
 
 ```
 
-```{r}
+```{r, message=FALSE}
 #from HW2 to show potential relationship between degrees and walk time
 #collect personal data
 walks |> 
@@ -72,42 +74,67 @@ labs(title = "Weather vs Walk Time",
 theme_bw()
 ```
 
-```{r}
+## Attempting new visualization (hexbin)
+
+```{r, message=FALSE}
 #hexbin plot
 
+#base ggplot, dataset = walks
+#x stored as numeric factor form work due
+#y = walk time in seconds
 ggplot(walks, aes(x =as.numeric(as.character (work_due)), y = walk_time_s)) +
+  #hexbin geometry frmo ggplot2
+  #bins = 16 for gut-check
   geom_hex(bins = 16) +
+  #set gradient fill from light blue (low) to dark blue for high values
   scale_fill_gradient(low = "lightblue", high = "darkblue") +
   theme_minimal() 
-
+#doesnt look great try something else
 ```
 
-```{r}
+## Attempting new visualization (bubblechart)
+
+```{r, message=FALSE}
+#walks data
 walks |> 
+  #arrange data by descinging order for work due
   arrange(desc(work_due)) |> 
+#store work due as numeric value instead of factor
   mutate(work_due = as.numeric(as.character(work_due))) |> 
+  #base ggplot, x = work due, y = walk time in seconds
   ggplot(aes(x=work_due, y = walk_time_s, size = work_due, color = work_due)) +
+  #geom point for bubblechart shape
   geom_point(alpha=0.5) +
+  #scale by work due,
   scale_size(range = c(10,24), name ="Work Due")
   
 ```
 
-```{r}
-library(ggbeeswarm)
+## Attempting new visualization
+(violin plot)
+
+```{r, message=FALSE}
+
 walks |>
+  #mutate work_due as a factor
   mutate(work_due = factor(work_due)) |>
+  #base gg plot
   ggplot(aes(
+    # x = work due
     x = work_due,
+    #y is walk time in seconds
     y = walk_time_s,
+    #color by work due
     color = work_due
   )) +
+  #violin plot geometry
   geom_violin(
-    size = 2,
-    alpha = 0.8,
-    cex = 2,
-    method = "center"
-  ) +
-  scale_color_viridis_d() +
+    #thickness of lines
+    linewidth = 1,
+    #drop equal false to not drop data sets with fewer than 2 values
+ drop = FALSE ) +
+#set color by work due
+  scale_color_viridis_d("work_due") +
   theme_minimal()
 ```
 
