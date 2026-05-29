@@ -92,3 +92,22 @@ walks |>
   
 ```
 
+```{r}
+library(ggbeeswarm)
+walks |>
+  mutate(work_due = factor(work_due)) |>
+  ggplot(aes(
+    x = work_due,
+    y = walk_time_s,
+    color = work_due
+  )) +
+  geom_violin(
+    size = 2,
+    alpha = 0.8,
+    cex = 2,
+    method = "center"
+  ) +
+  scale_color_viridis_d() +
+  theme_minimal()
+```
+
