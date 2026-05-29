@@ -84,9 +84,11 @@ ggplot(walks, aes(x =as.numeric(as.character (work_due)), y = walk_time_s)) +
 
 ```{r}
 walks |> 
-  mutate(work_due=round)
-ggplot(walks, aes(x = as.numeric(as.character(work_due)), y = walk_time_s)) +
-  geom_count(aes(color = "purple", alpha = 0.8)) 
+  arrange(desc(work_due)) |> 
+  mutate(work_due = as.numeric(as.character(work_due))) |> 
+  ggplot(aes(x=work_due, y = walk_time_s, size = work_due, color = work_due)) +
+  geom_point(alpha=0.5) +
+  scale_size(range = c(10,24), name ="Work Due")
   
 ```
 
